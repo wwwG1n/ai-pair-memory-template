@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "ai-pair-memory": {
+      "command": "python",
+      "args": [
+        "${workspaceFolder}/tools/shared_memory_mcp/serve.py"
+      ],
+      "env": {
+        "AI_PAIR_ROOT": "${workspaceFolder}"
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "phase": "planning",
+  "owner": "cursor_plan",
+  "change_id": null,
+  "summary": "Bootstrap state. Cursor should produce a plan or OpenSpec proposal before Kimi executes.",
+  "updated_at": "2026-05-17T00:00:00Z"
+}
