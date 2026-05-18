@@ -9,7 +9,7 @@
 
 ## Active Tasks
 
-- [ ] Cursor: produce or approve the next plan
+- [ ] Codex in Cursor: produce or approve the next plan
 - [ ] Kimi: wait for explicit handoff before execution
 
 ## Completed Tasks

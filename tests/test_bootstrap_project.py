@@ -25,7 +25,7 @@ def create_workspace(tmp_path: Path) -> Path:
         json.dumps(
             {
                 "phase": "planning",
-                "owner": "cursor_plan",
+                "owner": "codex_plan",
                 "change_id": None,
                 "summary": "Bootstrap state.",
                 "updated_at": "2026-05-17T00:00:00Z",
@@ -73,14 +73,17 @@ def test_bootstrap_workspace_rewrites_placeholders(tmp_path: Path) -> None:
     bootstrap_workspace(workspace, create_venv=False, install_dev=False)
 
     ai_context = (workspace / "AI_CONTEXT.md").read_text(encoding="utf-8")
+    handoff_files = sorted(workspace.glob("COLDSTART_HANDOFF_*.md"))
     status = json.loads((workspace / ".ai-pair" / "status.json").read_text(encoding="utf-8"))
     handoff = (workspace / ".ai-pair" / "current_handoff.md").read_text(encoding="utf-8")
     cursor_mcp = json.loads((workspace / ".cursor" / "mcp.json").read_text(encoding="utf-8"))
 
     assert "REPLACE_WITH_PROJECT_ROOT" not in ai_context
     assert str(workspace) in ai_context
+    assert len(handoff_files) == 1
+    assert str(workspace) in handoff_files[0].read_text(encoding="utf-8")
     assert "Bootstrap complete." in status["summary"]
-    assert "Cursor should inspect the requested change" in handoff
+    assert "The Codex plugin in Cursor should inspect the requested change" in handoff
     assert cursor_mcp["mcpServers"]["ai-pair-memory"]["command"] == "python"
 
 

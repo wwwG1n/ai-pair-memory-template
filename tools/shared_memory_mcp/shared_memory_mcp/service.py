@@ -179,13 +179,13 @@ class SharedMemoryService:
 
         if next_phase == "planning":
             focus = "Replan the change. Review found design drift that should not be patched locally."
-            handoff_owner = "cursor_plan"
+            handoff_owner = "codex_plan"
         elif next_phase == "fix_pending":
-            focus = "Fix the open review findings before asking Cursor for another review pass."
+            focus = "Fix the open review findings before asking Codex for another review pass."
             handoff_owner = "kimi_fix"
         else:
             focus = "No open findings remain. Confirm final status and archive the change if appropriate."
-            handoff_owner = "cursor_review"
+            handoff_owner = "codex_review"
 
         handoff = self.render_handoff(
             target_agent=handoff_owner,
@@ -279,10 +279,10 @@ class SharedMemoryService:
     def _next_phase_from_findings(self, findings: list[ReviewFinding]) -> tuple[str, str]:
         open_findings = [item for item in findings if item.status != "closed"]
         if any(item.kind == "design_drift" for item in open_findings):
-            return "planning", "cursor_plan"
+            return "planning", "codex_plan"
         if open_findings:
             return "fix_pending", "kimi_fix"
-        return "done", "cursor_review"
+        return "done", "codex_review"
 
     def _open_findings_as_lines(self) -> list[str]:
         content = self.store.read_review_findings().strip()

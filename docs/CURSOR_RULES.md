@@ -10,6 +10,7 @@ Purpose:
 
 - load `AGENTS.md`
 - load `AI_CONTEXT.md`
+- load the newest `COLDSTART_HANDOFF_*.md` when present
 - load active shared-memory files
 - enforce `using-superpowers` startup discipline
 
@@ -19,7 +20,7 @@ Planning-only rule.
 
 Purpose:
 
-- keep Cursor in planning mode
+- keep Codex in planning mode inside Cursor
 - call `best-minds` for non-obvious architecture and safety tradeoffs
 - update handoff and task state
 
@@ -48,4 +49,4 @@ Purpose:
 
 - Keep bootstrap rules small and stable.
 - Put project-specific logic in nested `.cursor/rules/` directories if the repo later grows multiple subsystems.
-- Do not add rules that let Cursor silently take over Kimi's execution role.
+- Do not add rules that let Codex silently take over Kimi's execution role.

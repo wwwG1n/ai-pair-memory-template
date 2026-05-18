@@ -4,8 +4,8 @@ globs:
 alwaysApply: true
 ---
 
-- Before substantive work, read `AGENTS.md`, `AI_CONTEXT.md`, `.ai-pair/status.json`, and `.ai-pair/current_handoff.md`.
-- Treat `AI_CONTEXT.md` as long-lived memory and `.ai-pair/` as active workflow memory.
+- Before substantive work, read `AGENTS.md`, `AI_CONTEXT.md`, the newest `COLDSTART_HANDOFF_*.md` when present, `.ai-pair/status.json`, and `.ai-pair/current_handoff.md`.
+- Treat `AI_CONTEXT.md` as compact durable memory, the newest `COLDSTART_HANDOFF_*.md` as detailed recovery memory, and `.ai-pair/` as active workflow memory.
 - Explicitly apply the logic of `using-superpowers` at the start of the conversation.
 - If the shared-memory MCP server is available, prefer MCP tools for shared state updates.
 - Do not assume Kimi has seen private Cursor tabs. Put durable state into shared memory.

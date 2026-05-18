@@ -2,17 +2,19 @@
 
 Public template for a two-assistant coding workflow:
 
-`Cursor strong model (plan/review) -> Kimi extension (execute/fix) -> Cursor strong model (review) -> Kimi extension (auto-fix loop)`
+`Cursor Codex plugin (plan/review) -> Kimi extension (execute/fix) -> Cursor Codex plugin (review) -> Kimi extension (auto-fix loop)`
 
 The template does not attempt to merge private chat histories. Instead, it creates a shared memory layer that both assistants can read and write:
 
-- `AI_CONTEXT.md` for long-lived project memory
+- `AI_CONTEXT.md` for compact long-lived project memory
+- the newest `COLDSTART_HANDOFF_YYYYMMDD.md` for detailed cold-start recovery
 - `.ai-pair/` for active task state, handoffs, blockers, and review results
 - a local Python MCP server for structured reads, writes, and search
 
 ## What You Get
 
 - A shared-memory directory at `.ai-pair/`
+- A `COLDSTART_HANDOFF_YYYYMMDD.md` file created during bootstrap
 - Cursor project rules in `.cursor/rules/`
 - Cursor MCP config in `.cursor/mcp.json`
 - A Python shared-memory MCP server in `tools/shared_memory_mcp/`
@@ -31,19 +33,21 @@ The template does not attempt to merge private chat histories. Instead, it creat
 3. In Cursor, open the project root. Cursor should detect:
    - `AGENTS.md`
    - `AI_CONTEXT.md`
+   - the newest `COLDSTART_HANDOFF_YYYYMMDD.md`
    - `.cursor/rules/`
    - `.cursor/mcp.json` rewritten to the local `.venv` interpreter
 4. In the Kimi VS Code extension, add the same MCP server described in [docs/KIMI_BOOTSTRAP.md](docs/KIMI_BOOTSTRAP.md).
 5. In Kimi, run `/init` once, then open:
    - `@AGENTS.md`
    - `@AI_CONTEXT.md`
+   - the newest `@COLDSTART_HANDOFF_YYYYMMDD.md`
    - `@.ai-pair/current_handoff.md`
 
 ## Workflow Contract
 
-- Cursor strong model owns planning and review.
+- The Codex plugin in Cursor owns planning and review.
 - Kimi owns execution and fix passes.
-- Both assistants must treat `.ai-pair/` and `AI_CONTEXT.md` as the source of truth.
+- Both assistants must treat `AI_CONTEXT.md`, the newest `COLDSTART_HANDOFF_*.md`, and `.ai-pair/` as the source of truth for their respective scopes.
 - Medium/large changes must go through the OpenSpec gate before execution.
 
 ## Repository Layout
@@ -57,13 +61,15 @@ scripts/bootstrap_project.py
 spec/                      OpenSpec starter structure
 tools/shared_memory_mcp/   Python MCP server
 tests/                     Unit and integration-oriented tests
-AI_CONTEXT.md              Long-lived project memory
+AI_CONTEXT.md              Compact long-lived project memory
+COLDSTART_HANDOFF_*.md    Detailed cold-start recovery pack
 AGENTS.md                  Cross-session project instructions
 ```
 
 ## Key Design Choices
 
 - Shared state lives in files first, not hidden chat state.
+- Durable memory follows the local `context-coldstart-pack` dual-file pattern.
 - MCP adds structured access and search, but files remain the truth source.
 - Kimi bootstrap is a one-time setup step, not a per-task requirement.
 - `high` and `critical` review findings always block `done`.

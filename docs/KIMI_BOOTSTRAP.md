@@ -18,6 +18,7 @@ This template assumes Kimi runs as a VS Code extension inside Cursor and accepts
    - run `/init`
    - reference `@AGENTS.md`
    - reference `@AI_CONTEXT.md`
+   - reference the newest `@COLDSTART_HANDOFF_YYYYMMDD.md`
    - reference `@.ai-pair/current_handoff.md`
 6. Confirm Kimi can read the MCP resources and the shared files.
 
@@ -33,10 +34,11 @@ Workspace settings included in `.vscode/settings.json`:
 After bootstrap, Kimi should:
 
 1. read the shared handoff
-2. read the task source
-3. execute only the current tasks
-4. write blockers and events instead of rewriting the plan
+2. read the durable cold-start handoff when it changed
+3. read the task source
+4. execute only the current tasks
+5. write blockers and events instead of rewriting the plan
 
 ## If MCP Is Unavailable
 
-Kimi can still operate by reading and writing the shared files directly, but it loses structured search and handoff generation.
+Kimi can still operate by reading and writing the shared files directly, but it loses structured search and handoff generation from the Codex-shared MCP layer.

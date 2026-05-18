@@ -29,7 +29,7 @@ AND the next owner becomes `kimi_fix`
 GIVEN a recorded review with an open `design_drift` finding
 WHEN the shared-memory service processes the review
 THEN the next phase becomes `planning`
-AND the next owner becomes `cursor_plan`
+AND the next owner becomes `codex_plan`
 
 ### Requirement: Severe Findings Block Completion
 

@@ -2,16 +2,16 @@
 
 ## Default Flow
 
-1. Cursor reads `AGENTS.md`, `AI_CONTEXT.md`, and `.ai-pair/current_handoff.md`.
-2. Cursor decides whether the OpenSpec gate is required.
-3. Cursor writes the plan or OpenSpec proposal.
+1. The Codex plugin in Cursor reads `AGENTS.md`, `AI_CONTEXT.md`, the newest `COLDSTART_HANDOFF_*.md` when present, and `.ai-pair/current_handoff.md`.
+2. Codex decides whether the OpenSpec gate is required.
+3. Codex writes the plan or OpenSpec proposal.
 4. Ownership moves to `kimi_execute`.
 5. Kimi executes only the approved tasks.
-6. Ownership moves to `cursor_review`.
-7. Cursor reviews the diff, tests, and security posture.
+6. Ownership moves to `codex_review`.
+7. Codex reviews the diff, tests, and security posture.
 8. If findings exist, ownership moves to `kimi_fix`.
 9. Kimi fixes only the recorded findings.
-10. Cursor performs the final review and closes the loop.
+10. Codex performs the final review and closes the loop.
 
 ## OpenSpec Gate
 
@@ -29,15 +29,16 @@ Required skills in this phase:
 
 ## Planning Phase
 
-Cursor responsibilities:
+Codex responsibilities:
 
 - explicit startup skill routing via `using-superpowers`
 - architecture and strategy review using `best-minds` when tradeoffs are non-obvious
 - update `.ai-pair/status.json`
 - update `.ai-pair/task_board.md`
 - update `.ai-pair/current_handoff.md`
+- refresh durable memory when the round materially changes project understanding
 
-Cursor must not do the main implementation during this phase.
+Codex must not do the main implementation during this phase.
 
 ## Execution Phase
 
@@ -46,17 +47,19 @@ Kimi responsibilities:
 - read shared memory before starting
 - follow `.ai-pair/task_board.md` or OpenSpec `tasks.md`
 - append events and blockers
+- refresh durable memory if execution materially changes project understanding
 - avoid replanning unless the handoff explicitly requests it
 
 ## Review Phase
 
-Cursor responsibilities:
+Codex responsibilities:
 
 - read diff, test output, and shared memory
 - apply `pr-reviewer`
 - apply `review-plan-implementation` when there is a plan or OpenSpec task list
 - apply a `best-minds` security pass on security-sensitive changes
 - record findings in `.ai-pair/review_findings.md`
+- refresh durable memory when review changes the next safe recovery step
 
 ## Fix Loop
 

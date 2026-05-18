@@ -8,9 +8,10 @@ Keep Cursor and Kimi aligned without copying private chat transcripts between pa
 
 The system does not synchronize hidden conversation state. It synchronizes **durable workflow state** instead.
 
-That state is split into two layers:
+That state is split into three layers:
 
-- `AI_CONTEXT.md`: long-lived project memory
+- `AI_CONTEXT.md`: compact long-lived project memory
+- the newest `COLDSTART_HANDOFF_*.md`: detailed cold-start recovery memory
 - `.ai-pair/`: active execution and review memory
 
 ## Components
@@ -19,6 +20,7 @@ That state is split into two layers:
 
 The following files are the canonical state:
 
+- `COLDSTART_HANDOFF_*.md`
 - `.ai-pair/status.json`
 - `.ai-pair/events.jsonl`
 - `.ai-pair/task_board.md`
@@ -27,7 +29,7 @@ The following files are the canonical state:
 - `.ai-pair/blockers.md`
 - `AI_CONTEXT.md`
 
-Both assistants must treat these files as authoritative.
+Both assistants must treat these files as authoritative, with `AI_CONTEXT.md` and the newest handoff carrying durable project memory and `.ai-pair/` carrying active change state.
 
 ### 2. MCP Access Layer
 
@@ -64,9 +66,9 @@ Kimi is intentionally limited to execution and fix passes. It should not silentl
 
 ## Ownership Model
 
-- `cursor_plan`: produces plans and OpenSpec proposals
+- `codex_plan`: produces plans and OpenSpec proposals
 - `kimi_execute`: implements approved tasks
-- `cursor_review`: reviews diffs, tests, and security risks
+- `codex_review`: reviews diffs, tests, and security risks
 - `kimi_fix`: addresses review findings
 
 ## Phase Model

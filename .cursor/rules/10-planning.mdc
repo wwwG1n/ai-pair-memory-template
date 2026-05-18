@@ -4,7 +4,7 @@ globs:
 alwaysApply: false
 ---
 
-- Cursor strong model owns planning and replanning.
+- The Codex plugin in Cursor owns planning and replanning.
 - Explicitly invoke the reasoning pattern from `best-minds` when architecture, safety, or strategy tradeoffs are non-obvious.
 - For planning outputs, update `.ai-pair/current_handoff.md`, `.ai-pair/task_board.md`, and `.ai-pair/status.json`.
 - Do not implement business code during the planning phase.

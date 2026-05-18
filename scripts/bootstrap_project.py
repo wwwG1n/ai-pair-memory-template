@@ -7,9 +7,20 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+HANDOFF_GLOB = "COLDSTART_HANDOFF_*.md"
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def handoff_filename_for_today() -> str:
+    return f"COLDSTART_HANDOFF_{datetime.now().strftime('%Y%m%d')}.md"
+
+
+def newest_handoff_path(workspace: Path) -> Path | None:
+    candidates = sorted(path for path in workspace.glob(HANDOFF_GLOB) if path.is_file())
+    return candidates[-1] if candidates else None
 
 
 def should_use_openspec(
@@ -67,10 +78,115 @@ def refresh_ai_context(workspace: Path) -> None:
     path.write_text(content, encoding="utf-8")
 
 
+def ensure_coldstart_handoff(workspace: Path) -> Path:
+    existing = newest_handoff_path(workspace)
+    if existing is not None:
+        return existing
+
+    now = utc_now()
+    path = workspace / handoff_filename_for_today()
+    body = "\n".join(
+        [
+            "# Project Cold-Start Handoff",
+            "",
+            "## Context Metadata",
+            "",
+            f"- Context created: {now}",
+            f"- Last updated: {now}",
+            "- Timezone: UTC",
+            f"- Workspace root: `{workspace}`",
+            "",
+            "## Project Background",
+            "",
+            f"- Project name: `{workspace.name}`",
+            "- Domain: shared memory workflow for the Codex plugin in Cursor and the Kimi extension",
+            f"- Repo or workspace locations: `{workspace}`",
+            "- High-level goal: keep planning, execution, review, and fix context reusable across new chats without copying private transcripts",
+            "",
+            "## Compressed Conversation History",
+            "",
+            "- Original user request: bootstrap the shared-memory workflow template",
+            "- Major request changes: align the strong-model role with the Codex plugin in Cursor and keep the workflow synchronized with the local context-coldstart-pack skill",
+            "- Decision sequence: initialize shared-memory MCP, split planning/review from execution/fix, then keep durable state in Markdown files plus `.ai-pair/`",
+            "- Important turning points: medium and large changes must pass through OpenSpec before Kimi executes",
+            "",
+            "## Persistent Context",
+            "",
+            "- Stable terminology: Codex owns planning/review, Kimi owns execution/fix",
+            "- Durable rules: `.ai-pair/` is the active change source of truth; `AI_CONTEXT.md` is compact memory; this handoff is the detailed restart pack",
+            "- Metrics or formulas: `high` and `critical` findings block `done`; `design_drift` routes back to `planning`",
+            "- Environment constraints: shared-memory MCP is optional but preferred",
+            "- Key files and modules: `AGENTS.md`, `AI_CONTEXT.md`, `.ai-pair/`, `.cursor/rules/`, `tools/shared_memory_mcp/`, `spec/`",
+            "- Workflow and code-style constraints: read both durable memory files before substantive work and keep them synchronized after meaningful rounds",
+            "",
+            "## Current State",
+            "",
+            "- Current objective: initialize the workflow for a real project",
+            "- Current status: Bootstrap only",
+            "- Latest blockers: None recorded",
+            "- Latest next step: connect Codex and Kimi to the shared-memory workflow, then start the first planned change",
+            "- Latest important artifacts: `AI_CONTEXT.md`, this handoff file, `.ai-pair/`, and `.cursor/mcp.json`",
+            "",
+            "## Experiments Snapshot",
+            "",
+            "- Current or latest experiment: Not run in this session",
+            "- Commands: None",
+            "- Hyperparameters: None",
+            "- Checkpoints: None",
+            "- Results: None",
+            "",
+            "## Key Files And Modules",
+            "",
+            "- Documents: `README.md`, `AGENTS.md`, `AI_CONTEXT.md`",
+            "- Scripts: `scripts/bootstrap_project.py`, `tools/shared_memory_mcp/serve.py`",
+            "- Entry points: `.cursor/rules/`, `.cursor/mcp.json`, Kimi MCP setup",
+            "- Results and artifacts: `.ai-pair/status.json`, `.ai-pair/current_handoff.md`, `.ai-pair/review_findings.md`",
+            "",
+            "## Completed Work",
+            "",
+            "- Shared-memory template scaffolded",
+            "- Codex/Kimi ownership model defined",
+            "- Bootstrap flow documented",
+            "",
+            "## Current Blockers And Risks",
+            "",
+            "- No blocker recorded",
+            "- Risk: if durable memory files drift from `.ai-pair/`, a fresh session may start from stale assumptions",
+            "",
+            "## Workflow, Tone, And Style Constraints",
+            "",
+            "- Tone: direct, operational, and audit-friendly",
+            "- Explanation style: concise summaries with exact file paths",
+            "- Workflow order: Codex plan/review -> Kimi execute/fix -> Codex final review",
+            "- Coding constraints: shared-memory writes should prefer MCP when available",
+            "- Documentation style: keep durable memory high-signal and avoid raw transcript dumps",
+            "",
+            "## Next-Step Recovery Instructions",
+            "",
+            "- First files to read: `AGENTS.md`, `AI_CONTEXT.md`, the newest `COLDSTART_HANDOFF_*.md`, `.ai-pair/status.json`, `.ai-pair/current_handoff.md`",
+            "- Exact next step: decide whether the next requested change needs OpenSpec before handing work to Kimi",
+            "- Recommended first prompt for a new session: `Read AGENTS.md, AI_CONTEXT.md, the newest COLDSTART_HANDOFF_*.md, and .ai-pair/current_handoff.md, then continue the current change.`",
+            "",
+            "## Round Log",
+            "",
+            f"### {now}",
+            "",
+            "- User request: Bootstrapped the workflow template",
+            "- Decisions or changes: Initialized durable memory files plus shared `.ai-pair/` state",
+            "- Files touched: `AI_CONTEXT.md`, this handoff file, `.ai-pair/`, `.cursor/mcp.json`",
+            "- Experiment updates: None",
+            "- New blockers or open questions: Keep the durable memory files synchronized with `.ai-pair/`",
+            "",
+        ]
+    )
+    path.write_text(body, encoding="utf-8")
+    return path
+
+
 def refresh_status(workspace: Path) -> None:
     path = workspace / ".ai-pair" / "status.json"
     payload = json.loads(path.read_text(encoding="utf-8"))
-    payload["summary"] = "Bootstrap complete. Cursor should now plan the first change or trigger the OpenSpec gate."
+    payload["summary"] = "Bootstrap complete. The Codex plugin in Cursor should now plan the first change or trigger the OpenSpec gate."
     payload["updated_at"] = utc_now()
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -83,12 +199,12 @@ def refresh_handoff(workspace: Path) -> None:
             "",
             "## Owner",
             "",
-            "- Current owner: `cursor_plan`",
+            "- Current owner: `codex_plan`",
             "- Current phase: `planning`",
             "",
             "## Required Action",
             "",
-            "Cursor should inspect the requested change, decide whether the OpenSpec gate applies, and then hand execution to Kimi.",
+            "The Codex plugin in Cursor should inspect the requested change, decide whether the OpenSpec gate applies, and then hand execution to Kimi.",
             "",
             "Kimi should wait until ownership moves to `kimi_execute`.",
             "",
@@ -127,6 +243,7 @@ def bootstrap_workspace(workspace: Path, create_venv: bool, install_dev: bool) -
     if create_venv:
         maybe_create_venv(workspace, install_dev=install_dev)
     refresh_ai_context(workspace)
+    ensure_coldstart_handoff(workspace)
     refresh_status(workspace)
     refresh_handoff(workspace)
     refresh_cursor_mcp_config(workspace)
