@@ -25,7 +25,7 @@ def create_workspace(tmp_path: Path) -> Path:
         json.dumps(
             {
                 "phase": "planning",
-                "owner": "codex_plan",
+                "owner": "claude_plan",
                 "change_id": None,
                 "summary": "Bootstrap state.",
                 "updated_at": "2026-05-17T00:00:00Z",
@@ -83,7 +83,7 @@ def test_bootstrap_workspace_rewrites_placeholders(tmp_path: Path) -> None:
     assert len(handoff_files) == 1
     assert str(workspace) in handoff_files[0].read_text(encoding="utf-8")
     assert "Bootstrap complete." in status["summary"]
-    assert "The Codex plugin in Cursor should inspect the requested change" in handoff
+    assert "Cursor's built-in Claude should inspect the requested change" in handoff
     assert cursor_mcp["mcpServers"]["ai-pair-memory"]["command"] == "python"
 
 

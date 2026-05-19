@@ -14,7 +14,7 @@ Before doing substantive work:
 
 ## Default Workflow Roles
 
-- Cursor Codex plugin:
+- Cursor built-in Claude:
   - planning
   - OpenSpec gating
   - review
@@ -23,6 +23,17 @@ Before doing substantive work:
   - fix passes
 
 Do not collapse these roles unless the human explicitly asks you to.
+
+## Planning Quality Bar
+
+- Planning outputs must be detailed enough that Claude could execute the task itself without inventing missing steps.
+- Every substantial plan should include:
+  - the requested outcome and non-goals
+  - the files or modules expected to change
+  - the exact implementation order
+  - the validation and test steps
+  - open risks, ambiguities, or required approvals
+  - a "If Claude implemented this itself" execution blueprint
 
 ## Shared Memory Rules
 

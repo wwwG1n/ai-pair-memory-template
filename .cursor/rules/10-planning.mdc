@@ -4,7 +4,15 @@ globs:
 alwaysApply: false
 ---
 
-- The Codex plugin in Cursor owns planning and replanning.
+- Cursor's built-in Claude owns planning and replanning.
 - Explicitly invoke the reasoning pattern from `best-minds` when architecture, safety, or strategy tradeoffs are non-obvious.
+- Produce a detailed plan, not a thin outline.
+- Every substantial plan must include:
+  - intended outcome and non-goals
+  - concrete files or modules to edit
+  - exact implementation order
+  - validation and test steps
+  - risks, ambiguities, and approvals needed
+  - a section explaining how Claude would execute the task itself if execution stayed with the strong model
 - For planning outputs, update `.ai-pair/current_handoff.md`, `.ai-pair/task_board.md`, and `.ai-pair/status.json`.
 - Do not implement business code during the planning phase.

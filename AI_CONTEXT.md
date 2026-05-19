@@ -3,7 +3,7 @@
 ## Context Metadata
 
 - Context created: 2026-05-17 00:00:00 +00:00
-- Last updated: 2026-05-19 00:04:11 +08:00
+- Last updated: 2026-05-19 00:31:42 +08:00
 - Timezone: UTC
 - Workspace root: `REPLACE_WITH_PROJECT_ROOT`
 
@@ -30,7 +30,7 @@
 - File-backed memory is the truth source.
 - Durable memory follows the local `context-coldstart-pack` dual-file pattern.
 - MCP is an access layer, not the only storage layer.
-- The Codex plugin in Cursor owns planning and review.
+- Cursor's built-in Claude owns planning and review.
 - Kimi owns execution and fix passes.
 - Medium and large changes must go through the OpenSpec gate.
 
@@ -48,7 +48,7 @@
 - Current objective: initialize the template for a real project
 - Current status: Bootstrap only
 - Latest blockers: None recorded
-- Next recommended step: Run the bootstrap script, connect the Codex plugin in Cursor and Kimi to the MCP server, and start the first planned change
+- Next recommended step: Run the bootstrap script, connect Cursor's built-in Claude and Kimi to the MCP server, and start the first planned change with Claude generating a detailed execution-ready plan
 
 ## Experiments Snapshot
 
@@ -84,4 +84,12 @@
 - New decisions or changes: Upgraded the template from single-file durable memory to the local dual-file pattern: `AI_CONTEXT.md` as compact memory plus the newest `COLDSTART_HANDOFF_*.md` as the detailed recovery pack, while keeping `.ai-pair/` as active shared execution state. Updated bootstrap so it creates the first cold-start handoff automatically, and aligned `AGENTS.md`, Cursor rules, workflow docs, and Kimi bootstrap guidance with that model
 - Files touched: `AGENTS.md`, `AI_CONTEXT.md`, `README.md`, `.cursor/rules/00-bootstrap.mdc`, `docs/`, `scripts/bootstrap_project.py`, and `tests/test_bootstrap_project.py`
 - Experiment or result updates: `python -m pytest` still passed after the dual-memory sync
+- New blockers or open questions: None recorded
+
+### 2026-05-19 00:31:42 +08:00
+
+- User request: Asked to update the workflow again so the strong-model role is Cursor's built-in Claude instead of Codex, and to require more detailed plans that include how the strong model would execute the task itself
+- New decisions or changes: Renamed the strong-model role from Codex to Claude across workflow docs, default shared-memory files, bootstrap output, routing owner ids, and tests. Tightened the planning contract so substantial plans must now include scope, concrete files, implementation order, validation steps, risks, and an explicit "If Claude implemented this itself" execution blueprint
+- Files touched: `AGENTS.md`, `README.md`, `.ai-pair/*`, `.cursor/rules/10-planning.mdc`, `.cursor/rules/20-openspec-gate.mdc`, `.cursor/rules/30-review-loop.mdc`, `docs/WORKFLOW.md`, `docs/ARCHITECTURE.md`, `docs/CURSOR_RULES.md`, `docs/KIMI_BOOTSTRAP.md`, `scripts/bootstrap_project.py`, `tools/shared_memory_mcp/shared_memory_mcp/service.py`, `spec/specs/shared-memory-workflow/spec.md`, and `tests/*`
+- Experiment or result updates: Template validation should still pass through `python -m pytest` after the Claude rename and planning-detail upgrades
 - New blockers or open questions: None recorded

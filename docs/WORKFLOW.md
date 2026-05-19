@@ -2,16 +2,16 @@
 
 ## Default Flow
 
-1. The Codex plugin in Cursor reads `AGENTS.md`, `AI_CONTEXT.md`, the newest `COLDSTART_HANDOFF_*.md` when present, and `.ai-pair/current_handoff.md`.
-2. Codex decides whether the OpenSpec gate is required.
-3. Codex writes the plan or OpenSpec proposal.
+1. Cursor's built-in Claude reads `AGENTS.md`, `AI_CONTEXT.md`, the newest `COLDSTART_HANDOFF_*.md` when present, and `.ai-pair/current_handoff.md`.
+2. Claude decides whether the OpenSpec gate is required.
+3. Claude writes the plan or OpenSpec proposal.
 4. Ownership moves to `kimi_execute`.
 5. Kimi executes only the approved tasks.
-6. Ownership moves to `codex_review`.
-7. Codex reviews the diff, tests, and security posture.
+6. Ownership moves to `claude_review`.
+7. Claude reviews the diff, tests, and security posture.
 8. If findings exist, ownership moves to `kimi_fix`.
 9. Kimi fixes only the recorded findings.
-10. Codex performs the final review and closes the loop.
+10. Claude performs the final review and closes the loop.
 
 ## OpenSpec Gate
 
@@ -29,16 +29,26 @@ Required skills in this phase:
 
 ## Planning Phase
 
-Codex responsibilities:
+Claude responsibilities:
 
 - explicit startup skill routing via `using-superpowers`
 - architecture and strategy review using `best-minds` when tradeoffs are non-obvious
+- write a detailed plan that is executable without hidden assumptions
 - update `.ai-pair/status.json`
 - update `.ai-pair/task_board.md`
 - update `.ai-pair/current_handoff.md`
 - refresh durable memory when the round materially changes project understanding
 
-Codex must not do the main implementation during this phase.
+Every substantial plan must include:
+
+- intended outcome and non-goals
+- files or modules expected to change
+- concrete implementation order
+- validation and test steps
+- risks, ambiguities, and approvals needed
+- a "If Claude implemented this itself" execution blueprint
+
+Claude must not do the main implementation during this phase.
 
 ## Execution Phase
 
@@ -52,7 +62,7 @@ Kimi responsibilities:
 
 ## Review Phase
 
-Codex responsibilities:
+Claude responsibilities:
 
 - read diff, test output, and shared memory
 - apply `pr-reviewer`

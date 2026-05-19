@@ -20,9 +20,10 @@ Planning-only rule.
 
 Purpose:
 
-- keep Codex in planning mode inside Cursor
+- keep Claude in planning mode inside Cursor
 - call `best-minds` for non-obvious architecture and safety tradeoffs
 - update handoff and task state
+- force detailed planning with a self-execution blueprint
 
 ### `20-openspec-gate.mdc`
 
@@ -49,4 +50,4 @@ Purpose:
 
 - Keep bootstrap rules small and stable.
 - Put project-specific logic in nested `.cursor/rules/` directories if the repo later grows multiple subsystems.
-- Do not add rules that let Codex silently take over Kimi's execution role.
+- Do not add rules that let Claude silently take over Kimi's execution role.

@@ -66,10 +66,12 @@ Kimi is intentionally limited to execution and fix passes. It should not silentl
 
 ## Ownership Model
 
-- `codex_plan`: produces plans and OpenSpec proposals
+- `claude_plan`: produces plans and OpenSpec proposals
 - `kimi_execute`: implements approved tasks
-- `codex_review`: reviews diffs, tests, and security risks
+- `claude_review`: reviews diffs, tests, and security risks
 - `kimi_fix`: addresses review findings
+
+Claude planning outputs should be detailed enough that Claude could perform the implementation itself if the human later reassigns execution back to the strong model.
 
 ## Phase Model
 

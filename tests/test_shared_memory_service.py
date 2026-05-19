@@ -15,7 +15,7 @@ def seed_workspace(root: Path) -> SharedMemoryService:
         json.dumps(
             {
                 "phase": "review_pending",
-                "owner": "codex_review",
+                "owner": "claude_review",
                 "change_id": "add-shared-memory",
                 "summary": "Ready for review.",
                 "updated_at": "2026-05-17T00:00:00Z",
@@ -71,7 +71,7 @@ def test_record_review_routes_fix_pending_for_open_findings(tmp_path: Path) -> N
     service = seed_workspace(tmp_path)
 
     result = service.record_review(
-        reviewer="codex_review",
+        reviewer="claude_review",
         summary="Found a regression and missing test.",
         findings=[
             {
@@ -100,7 +100,7 @@ def test_record_review_routes_planning_for_design_drift(tmp_path: Path) -> None:
     service = seed_workspace(tmp_path)
 
     result = service.record_review(
-        reviewer="codex_review",
+        reviewer="claude_review",
         summary="Execution drifted away from the approved design.",
         findings=[
             {
@@ -117,7 +117,7 @@ def test_record_review_routes_planning_for_design_drift(tmp_path: Path) -> None:
     status_payload = json.loads((tmp_path / ".ai-pair" / "status.json").read_text(encoding="utf-8"))
     assert result["next_phase"] == "planning"
     assert status_payload["phase"] == "planning"
-    assert status_payload["owner"] == "codex_plan"
+    assert status_payload["owner"] == "claude_plan"
 
 
 def test_search_events_filters_by_query_and_severity(tmp_path: Path) -> None:
@@ -130,7 +130,7 @@ def test_search_events_filters_by_query_and_severity(tmp_path: Path) -> None:
         severity="info",
     )
     service.append_event(
-        agent="codex_review",
+        agent="claude_review",
         phase="fix_pending",
         kind="review_finding:defect",
         summary="Critical auth regression.",

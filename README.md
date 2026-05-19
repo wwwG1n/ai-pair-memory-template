@@ -2,7 +2,7 @@
 
 Public template for a two-assistant coding workflow:
 
-`Cursor Codex plugin (plan/review) -> Kimi extension (execute/fix) -> Cursor Codex plugin (review) -> Kimi extension (auto-fix loop)`
+`Cursor built-in Claude (plan/review) -> Kimi extension (execute/fix) -> Cursor built-in Claude (review) -> Kimi extension (auto-fix loop)`
 
 The template does not attempt to merge private chat histories. Instead, it creates a shared memory layer that both assistants can read and write:
 
@@ -45,10 +45,11 @@ The template does not attempt to merge private chat histories. Instead, it creat
 
 ## Workflow Contract
 
-- The Codex plugin in Cursor owns planning and review.
+- Cursor's built-in Claude owns planning and review.
 - Kimi owns execution and fix passes.
 - Both assistants must treat `AI_CONTEXT.md`, the newest `COLDSTART_HANDOFF_*.md`, and `.ai-pair/` as the source of truth for their respective scopes.
 - Medium/large changes must go through the OpenSpec gate before execution.
+- Claude's plan must be detailed enough that Claude itself could execute the task step by step without filling in missing implementation details.
 
 ## Repository Layout
 
@@ -71,6 +72,7 @@ AGENTS.md                  Cross-session project instructions
 - Shared state lives in files first, not hidden chat state.
 - Durable memory follows the local `context-coldstart-pack` dual-file pattern.
 - MCP adds structured access and search, but files remain the truth source.
+- Plans are intentionally detailed and include a self-execution blueprint for Claude.
 - Kimi bootstrap is a one-time setup step, not a per-task requirement.
 - `high` and `critical` review findings always block `done`.
 - Design drift sends the workflow back to `planning` instead of forcing local fixes.

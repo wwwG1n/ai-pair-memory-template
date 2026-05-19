@@ -41,4 +41,4 @@ After bootstrap, Kimi should:
 
 ## If MCP Is Unavailable
 
-Kimi can still operate by reading and writing the shared files directly, but it loses structured search and handoff generation from the Codex-shared MCP layer.
+Kimi can still operate by reading and writing the shared files directly, but it loses structured search and handoff generation from the Claude-shared MCP layer.
