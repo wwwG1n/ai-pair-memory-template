@@ -9,8 +9,8 @@
 
 ## Active Tasks
 
-- [ ] Claude in Cursor: produce or approve the next detailed plan
-- [ ] Kimi: wait for explicit handoff before execution
+- [ ] Primary assistant: produce or approve the next detailed plan
+- [ ] Secondary assistant: wait for explicit handoff before execution
 
 ## Completed Tasks
 

@@ -23,13 +23,13 @@ the system SHALL update the next workflow phase based on the open findings.
 GIVEN a recorded review with an open defect finding
 WHEN the shared-memory service processes the review
 THEN the next phase becomes `fix_pending`
-AND the next owner becomes `kimi_fix`
+AND the next owner becomes `secondary_fix`
 
 #### Scenario: Design drift requires replanning
 GIVEN a recorded review with an open `design_drift` finding
 WHEN the shared-memory service processes the review
 THEN the next phase becomes `planning`
-AND the next owner becomes `claude_plan`
+AND the next owner becomes `primary_plan`
 
 ### Requirement: Severe Findings Block Completion
 

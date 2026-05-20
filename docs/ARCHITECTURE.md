@@ -62,16 +62,16 @@ Cursor rules live in `.cursor/rules/` and enforce:
 
 Kimi uses the same files and the same MCP server.
 
-Kimi is intentionally limited to execution and fix passes. It should not silently replace planning or review ownership.
+The secondary assistant is intentionally limited to execution and fix passes. It should not silently replace planning or review ownership unless the human explicitly reassigns roles.
 
 ## Ownership Model
 
-- `claude_plan`: produces plans and OpenSpec proposals
-- `kimi_execute`: implements approved tasks
-- `claude_review`: reviews diffs, tests, and security risks
-- `kimi_fix`: addresses review findings
+- `primary_plan`: produces plans and OpenSpec proposals
+- `secondary_execute`: implements approved tasks
+- `primary_review`: reviews diffs, tests, and security risks
+- `secondary_fix`: addresses review findings
 
-Claude planning outputs should be detailed enough that Claude could perform the implementation itself if the human later reassigns execution back to the strong model.
+The primary assistant's planning outputs should be detailed enough that the same assistant could perform the implementation itself if the human later reassigns execution back to the primary lane.
 
 ## Phase Model
 

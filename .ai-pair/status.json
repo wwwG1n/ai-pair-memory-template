@@ -1,7 +1,7 @@
 {
   "phase": "planning",
-  "owner": "claude_plan",
+  "owner": "primary_plan",
   "change_id": null,
-  "summary": "Bootstrap state. Cursor's built-in Claude should produce a detailed plan or OpenSpec proposal before Kimi executes.",
+  "summary": "Bootstrap state. Assign the assistant that received the request first as `primary_plan`, then produce a detailed plan or OpenSpec proposal before the secondary assistant executes.",
   "updated_at": "2026-05-17T00:00:00Z"
 }

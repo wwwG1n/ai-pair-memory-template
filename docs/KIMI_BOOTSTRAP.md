@@ -33,7 +33,7 @@ Workspace settings included in `.vscode/settings.json`:
 
 After bootstrap, Kimi should:
 
-1. read the shared handoff
+1. read the shared handoff and determine whether Kimi is acting as the primary or secondary assistant for this change
 2. read the durable cold-start handoff when it changed
 3. read the task source
 4. execute only the current tasks
@@ -41,4 +41,4 @@ After bootstrap, Kimi should:
 
 ## If MCP Is Unavailable
 
-Kimi can still operate by reading and writing the shared files directly, but it loses structured search and handoff generation from the Claude-shared MCP layer.
+Kimi can still operate by reading and writing the shared files directly, but it loses structured search and handoff generation from the shared MCP layer.

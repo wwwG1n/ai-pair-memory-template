@@ -14,26 +14,29 @@ Before doing substantive work:
 
 ## Default Workflow Roles
 
-- Cursor built-in Claude:
+- Primary assistant for the current change:
   - planning
   - OpenSpec gating
   - review
-- Kimi extension:
+- Secondary assistant for the current change:
   - execution
   - fix passes
+
+The primary assistant is whichever assistant receives the request first and is chosen to handle planning/review for that change.
+The secondary assistant is the paired assistant that handles execution/fix for that change.
 
 Do not collapse these roles unless the human explicitly asks you to.
 
 ## Planning Quality Bar
 
-- Planning outputs must be detailed enough that Claude could execute the task itself without inventing missing steps.
+- Planning outputs must be detailed enough that the primary assistant could execute the task itself without inventing missing steps.
 - Every substantial plan should include:
   - the requested outcome and non-goals
   - the files or modules expected to change
   - the exact implementation order
   - the validation and test steps
   - open risks, ambiguities, or required approvals
-  - a "If Claude implemented this itself" execution blueprint
+  - a "If the primary assistant implemented this itself" execution blueprint
 
 ## Shared Memory Rules
 

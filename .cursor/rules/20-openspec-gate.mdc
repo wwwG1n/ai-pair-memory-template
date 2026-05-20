@@ -7,5 +7,5 @@ alwaysApply: false
 - Trigger OpenSpec when the change adds a feature, touches API/schema/contract/auth/security, spans more than 3 production files, or is expected to take more than 45 minutes.
 - Explicitly use `openspec-context-loading` before drafting or modifying a proposal.
 - Explicitly use `openspec-proposal-creation` to create or update `spec/changes/<change-id>/proposal.md`, `tasks.md`, and spec deltas.
-- Make the OpenSpec proposal detailed enough that Claude could implement it directly if the execution role later moves back to the strong model.
-- Once the proposal is approved, hand execution to Kimi and set the workflow owner to `kimi_execute`.
+- Make the OpenSpec proposal detailed enough that the primary assistant could implement it directly if the execution role later moves back to the strong model.
+- Once the proposal is approved, hand execution to the secondary assistant and set the workflow owner to `secondary_execute`.

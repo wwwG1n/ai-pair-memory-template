@@ -118,6 +118,7 @@ class SharedMemoryService:
             "## Owner",
             "",
             f"- Current owner: `{target_agent}`",
+            f"- Owner meaning: {self._describe_owner_role(target_agent)}",
             f"- Current phase: `{status.phase}`",
             f"- Change ID: `{change_id or status.change_id or 'none'}`",
             "",
@@ -179,13 +180,13 @@ class SharedMemoryService:
 
         if next_phase == "planning":
             focus = "Replan the change. Review found design drift that should not be patched locally."
-            handoff_owner = "claude_plan"
+            handoff_owner = "primary_plan"
         elif next_phase == "fix_pending":
-            focus = "Fix the open review findings before asking Claude for another review pass."
-            handoff_owner = "kimi_fix"
+            focus = "Fix the open review findings before handing the change back to the primary reviewer."
+            handoff_owner = "secondary_fix"
         else:
             focus = "No open findings remain. Confirm final status and archive the change if appropriate."
-            handoff_owner = "claude_review"
+            handoff_owner = "primary_review"
 
         handoff = self.render_handoff(
             target_agent=handoff_owner,
@@ -279,10 +280,19 @@ class SharedMemoryService:
     def _next_phase_from_findings(self, findings: list[ReviewFinding]) -> tuple[str, str]:
         open_findings = [item for item in findings if item.status != "closed"]
         if any(item.kind == "design_drift" for item in open_findings):
-            return "planning", "claude_plan"
+            return "planning", "primary_plan"
         if open_findings:
-            return "fix_pending", "kimi_fix"
-        return "done", "claude_review"
+            return "fix_pending", "secondary_fix"
+        return "done", "primary_review"
+
+    def _describe_owner_role(self, owner: str) -> str:
+        role_notes = {
+            "primary_plan": "This belongs to the assistant that first received the request and is handling planning for the current change.",
+            "primary_review": "This belongs to the assistant that first received the request and is handling review for the current change.",
+            "secondary_execute": "This belongs to the paired assistant that is executing the approved plan for the current change.",
+            "secondary_fix": "This belongs to the paired assistant that is fixing review findings for the current change.",
+        }
+        return role_notes.get(owner, "Follow the role assignment recorded for the current change.")
 
     def _open_findings_as_lines(self) -> list[str]:
         content = self.store.read_review_findings().strip()

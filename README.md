@@ -2,7 +2,7 @@
 
 Public template for a two-assistant coding workflow:
 
-`Cursor built-in Claude (plan/review) -> Kimi extension (execute/fix) -> Cursor built-in Claude (review) -> Kimi extension (auto-fix loop)`
+`Primary assistant (plan/review) -> secondary assistant (execute/fix) -> primary assistant (review) -> secondary assistant (auto-fix loop)`
 
 The template does not attempt to merge private chat histories. Instead, it creates a shared memory layer that both assistants can read and write:
 
@@ -43,13 +43,17 @@ The template does not attempt to merge private chat histories. Instead, it creat
    - the newest `@COLDSTART_HANDOFF_YYYYMMDD.md`
    - `@.ai-pair/current_handoff.md`
 
+At the start of each change, send the request to whichever assistant you want to act as the strong-model lane for that change.
+That first request recipient becomes the `primary` assistant; the other assistant becomes the `secondary` assistant.
+
 ## Workflow Contract
 
-- Cursor's built-in Claude owns planning and review.
-- Kimi owns execution and fix passes.
+- The primary assistant owns planning and review for the current change.
+- The secondary assistant owns execution and fix passes for the current change.
+- The primary assistant is whichever assistant received the request first and was chosen to handle planning/review.
 - Both assistants must treat `AI_CONTEXT.md`, the newest `COLDSTART_HANDOFF_*.md`, and `.ai-pair/` as the source of truth for their respective scopes.
 - Medium/large changes must go through the OpenSpec gate before execution.
-- Claude's plan must be detailed enough that Claude itself could execute the task step by step without filling in missing implementation details.
+- The primary assistant's plan must be detailed enough that the primary assistant itself could execute the task step by step without filling in missing implementation details.
 
 ## Repository Layout
 
@@ -72,7 +76,7 @@ AGENTS.md                  Cross-session project instructions
 - Shared state lives in files first, not hidden chat state.
 - Durable memory follows the local `context-coldstart-pack` dual-file pattern.
 - MCP adds structured access and search, but files remain the truth source.
-- Plans are intentionally detailed and include a self-execution blueprint for Claude.
+- Plans are intentionally detailed and include a self-execution blueprint for the primary assistant.
 - Kimi bootstrap is a one-time setup step, not a per-task requirement.
 - `high` and `critical` review findings always block `done`.
 - Design drift sends the workflow back to `planning` instead of forcing local fixes.

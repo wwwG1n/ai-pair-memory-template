@@ -4,7 +4,7 @@ globs:
 alwaysApply: false
 ---
 
-- Cursor's built-in Claude owns the review phase.
+- When Cursor is the current primary assistant, it owns the review phase.
 - Explicitly apply the logic of `pr-reviewer` for correctness, regressions, and missing tests.
 - Explicitly apply the logic of `review-plan-implementation` when an implementation must be checked against a plan or OpenSpec tasks.
 - On security-sensitive changes, add a `best-minds` pass from a top-tier security reviewer perspective.

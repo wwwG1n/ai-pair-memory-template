@@ -15,7 +15,7 @@ def seed_workspace(root: Path) -> SharedMemoryService:
         json.dumps(
             {
                 "phase": "review_pending",
-                "owner": "claude_review",
+                "owner": "primary_review",
                 "change_id": "add-shared-memory",
                 "summary": "Ready for review.",
                 "updated_at": "2026-05-17T00:00:00Z",
@@ -56,14 +56,14 @@ def test_update_status_rewrites_status_file(tmp_path: Path) -> None:
 
     result = service.update_status(
         phase="executing",
-        owner="kimi_execute",
+        owner="secondary_execute",
         summary="Execution started.",
         change_id="add-shared-memory",
     )
 
     status_payload = json.loads((tmp_path / ".ai-pair" / "status.json").read_text(encoding="utf-8"))
     assert status_payload["phase"] == "executing"
-    assert status_payload["owner"] == "kimi_execute"
+    assert status_payload["owner"] == "secondary_execute"
     assert result["status"]["change_id"] == "add-shared-memory"
 
 
@@ -71,7 +71,7 @@ def test_record_review_routes_fix_pending_for_open_findings(tmp_path: Path) -> N
     service = seed_workspace(tmp_path)
 
     result = service.record_review(
-        reviewer="claude_review",
+        reviewer="primary_review",
         summary="Found a regression and missing test.",
         findings=[
             {
@@ -92,7 +92,7 @@ def test_record_review_routes_fix_pending_for_open_findings(tmp_path: Path) -> N
 
     assert result["next_phase"] == "fix_pending"
     assert status_payload["phase"] == "fix_pending"
-    assert "kimi_fix" in handoff
+    assert "secondary_fix" in handoff
     assert "RV-001" in findings
 
 
@@ -100,7 +100,7 @@ def test_record_review_routes_planning_for_design_drift(tmp_path: Path) -> None:
     service = seed_workspace(tmp_path)
 
     result = service.record_review(
-        reviewer="claude_review",
+        reviewer="primary_review",
         summary="Execution drifted away from the approved design.",
         findings=[
             {
@@ -117,7 +117,7 @@ def test_record_review_routes_planning_for_design_drift(tmp_path: Path) -> None:
     status_payload = json.loads((tmp_path / ".ai-pair" / "status.json").read_text(encoding="utf-8"))
     assert result["next_phase"] == "planning"
     assert status_payload["phase"] == "planning"
-    assert status_payload["owner"] == "claude_plan"
+    assert status_payload["owner"] == "primary_plan"
 
 
 def test_search_events_filters_by_query_and_severity(tmp_path: Path) -> None:
@@ -130,7 +130,7 @@ def test_search_events_filters_by_query_and_severity(tmp_path: Path) -> None:
         severity="info",
     )
     service.append_event(
-        agent="claude_review",
+        agent="primary_review",
         phase="fix_pending",
         kind="review_finding:defect",
         summary="Critical auth regression.",

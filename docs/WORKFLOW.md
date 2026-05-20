@@ -2,16 +2,17 @@
 
 ## Default Flow
 
-1. Cursor's built-in Claude reads `AGENTS.md`, `AI_CONTEXT.md`, the newest `COLDSTART_HANDOFF_*.md` when present, and `.ai-pair/current_handoff.md`.
-2. Claude decides whether the OpenSpec gate is required.
-3. Claude writes the plan or OpenSpec proposal.
-4. Ownership moves to `kimi_execute`.
-5. Kimi executes only the approved tasks.
-6. Ownership moves to `claude_review`.
-7. Claude reviews the diff, tests, and security posture.
-8. If findings exist, ownership moves to `kimi_fix`.
-9. Kimi fixes only the recorded findings.
-10. Claude performs the final review and closes the loop.
+1. The assistant that receives the request first becomes the primary assistant for that change.
+2. The primary assistant reads `AGENTS.md`, `AI_CONTEXT.md`, the newest `COLDSTART_HANDOFF_*.md` when present, and `.ai-pair/current_handoff.md`.
+3. The primary assistant decides whether the OpenSpec gate is required.
+4. The primary assistant writes the plan or OpenSpec proposal.
+5. Ownership moves to `secondary_execute`.
+6. The secondary assistant executes only the approved tasks.
+7. Ownership moves to `primary_review`.
+8. The primary assistant reviews the diff, tests, and security posture.
+9. If findings exist, ownership moves to `secondary_fix`.
+10. The secondary assistant fixes only the recorded findings.
+11. The primary assistant performs the final review and closes the loop.
 
 ## OpenSpec Gate
 
@@ -29,7 +30,7 @@ Required skills in this phase:
 
 ## Planning Phase
 
-Claude responsibilities:
+Primary assistant responsibilities:
 
 - explicit startup skill routing via `using-superpowers`
 - architecture and strategy review using `best-minds` when tradeoffs are non-obvious
@@ -46,13 +47,13 @@ Every substantial plan must include:
 - concrete implementation order
 - validation and test steps
 - risks, ambiguities, and approvals needed
-- a "If Claude implemented this itself" execution blueprint
+- a "If the primary assistant implemented this itself" execution blueprint
 
-Claude must not do the main implementation during this phase.
+The primary assistant must not do the main implementation during this phase unless the human explicitly reassigns execution.
 
 ## Execution Phase
 
-Kimi responsibilities:
+Secondary assistant responsibilities:
 
 - read shared memory before starting
 - follow `.ai-pair/task_board.md` or OpenSpec `tasks.md`
@@ -62,7 +63,7 @@ Kimi responsibilities:
 
 ## Review Phase
 
-Claude responsibilities:
+Primary assistant responsibilities:
 
 - read diff, test output, and shared memory
 - apply `pr-reviewer`
