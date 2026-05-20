@@ -23,6 +23,7 @@ class WorkflowStatus:
     change_id: str | None
     summary: str
     updated_at: str
+    execution_gate: str = "plan_then_handoff"
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)

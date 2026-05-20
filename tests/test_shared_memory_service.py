@@ -19,11 +19,13 @@ def seed_workspace(root: Path) -> SharedMemoryService:
                 "change_id": "add-shared-memory",
                 "summary": "Ready for review.",
                 "updated_at": "2026-05-17T00:00:00Z",
+                "execution_gate": "plan_then_handoff",
             }
         ),
         encoding="utf-8",
     )
     (ai_pair / "events.jsonl").write_text("", encoding="utf-8")
+    (ai_pair / "plan.md").write_text("# Working Plan\n", encoding="utf-8")
     (ai_pair / "task_board.md").write_text("# Task Board\n\n- [ ] task-1\n", encoding="utf-8")
     (ai_pair / "current_handoff.md").write_text("# Current Handoff\n\nInitial handoff.\n", encoding="utf-8")
     (ai_pair / "review_findings.md").write_text("# Review Findings\n\nNo review findings recorded yet.\n", encoding="utf-8")

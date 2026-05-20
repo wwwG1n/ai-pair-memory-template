@@ -2,6 +2,7 @@
   "phase": "planning",
   "owner": "primary_plan",
   "change_id": null,
-  "summary": "Bootstrap state. Assign the assistant that received the request first as `primary_plan`, then produce a detailed plan or OpenSpec proposal before the secondary assistant executes.",
-  "updated_at": "2026-05-17T00:00:00Z"
+  "summary": "Bootstrap state. Assign the assistant that received the request first as `primary_plan`, write the plan artifact, then stop and hand execution to `secondary_execute`.",
+  "updated_at": "2026-05-17T00:00:00Z",
+  "execution_gate": "plan_then_handoff"
 }

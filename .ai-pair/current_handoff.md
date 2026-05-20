@@ -15,4 +15,6 @@ The assistant that first received the request should do one of the following:
 
 Any substantial plan should include the concrete implementation order, validation steps, and a section explaining how the primary assistant would complete the task itself if execution stayed with the strong model.
 
+Under the default `plan_then_handoff` gate, the primary assistant must stop after writing `.ai-pair/plan.md` and switching ownership.
+
 The secondary assistant should not start editing code until ownership moves to `secondary_execute`.

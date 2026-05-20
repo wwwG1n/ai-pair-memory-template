@@ -7,6 +7,7 @@ alwaysApply: false
 - When Cursor is the current primary assistant, it owns planning and replanning.
 - Explicitly invoke the reasoning pattern from `best-minds` when architecture, safety, or strategy tradeoffs are non-obvious.
 - Produce a detailed plan, not a thin outline.
+- Write the plan to `.ai-pair/plan.md` for lightweight changes, or to OpenSpec proposal/tasks files plus a summary in `.ai-pair/plan.md` for medium/large changes.
 - Every substantial plan must include:
   - intended outcome and non-goals
   - concrete files or modules to edit
@@ -14,5 +15,6 @@ alwaysApply: false
   - validation and test steps
   - risks, ambiguities, and approvals needed
   - a section explaining how the primary assistant would execute the task itself if execution stayed with the strong model
-- For planning outputs, update `.ai-pair/current_handoff.md`, `.ai-pair/task_board.md`, and `.ai-pair/status.json`.
-- Do not implement business code during the planning phase.
+- For planning outputs, update `.ai-pair/current_handoff.md`, `.ai-pair/task_board.md`, `.ai-pair/plan.md`, and `.ai-pair/status.json`.
+- Set the owner to `secondary_execute` when the plan is ready unless the human explicitly says to skip the handoff gate.
+- After the plan and handoff are written, stop. Do not implement business code in the same turn under the default gate.

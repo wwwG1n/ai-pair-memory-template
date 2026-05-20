@@ -9,7 +9,8 @@
 
 ## Active Tasks
 
-- [ ] Primary assistant: produce or approve the next detailed plan
+- [ ] Primary assistant: write or approve `.ai-pair/plan.md`
+- [ ] Primary assistant: stop after handing ownership to `secondary_execute`
 - [ ] Secondary assistant: wait for explicit handoff before execution
 
 ## Completed Tasks

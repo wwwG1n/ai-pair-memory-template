@@ -29,11 +29,13 @@ def create_workspace(tmp_path: Path) -> Path:
                 "change_id": None,
                 "summary": "Bootstrap state.",
                 "updated_at": "2026-05-17T00:00:00Z",
+                "execution_gate": "plan_then_handoff",
             }
         ),
         encoding="utf-8",
     )
     (tmp_path / ".ai-pair" / "current_handoff.md").write_text("# Current Handoff\n", encoding="utf-8")
+    (tmp_path / ".ai-pair" / "plan.md").write_text("# Working Plan\n", encoding="utf-8")
     return tmp_path
 
 
@@ -75,6 +77,7 @@ def test_bootstrap_workspace_rewrites_placeholders(tmp_path: Path) -> None:
     ai_context = (workspace / "AI_CONTEXT.md").read_text(encoding="utf-8")
     handoff_files = sorted(workspace.glob("COLDSTART_HANDOFF_*.md"))
     status = json.loads((workspace / ".ai-pair" / "status.json").read_text(encoding="utf-8"))
+    plan = (workspace / ".ai-pair" / "plan.md").read_text(encoding="utf-8")
     handoff = (workspace / ".ai-pair" / "current_handoff.md").read_text(encoding="utf-8")
     cursor_mcp = json.loads((workspace / ".cursor" / "mcp.json").read_text(encoding="utf-8"))
 
@@ -83,6 +86,8 @@ def test_bootstrap_workspace_rewrites_placeholders(tmp_path: Path) -> None:
     assert len(handoff_files) == 1
     assert str(workspace) in handoff_files[0].read_text(encoding="utf-8")
     assert "Bootstrap complete." in status["summary"]
+    assert status["execution_gate"] == "plan_then_handoff"
+    assert "Policy: `plan_then_handoff`" in plan
     assert "The assistant that received the request first should inspect the requested change" in handoff
     assert cursor_mcp["mcpServers"]["ai-pair-memory"]["command"] == "python"
 

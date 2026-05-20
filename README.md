@@ -9,11 +9,13 @@ The template does not attempt to merge private chat histories. Instead, it creat
 - `AI_CONTEXT.md` for compact long-lived project memory
 - the newest `COLDSTART_HANDOFF_YYYYMMDD.md` for detailed cold-start recovery
 - `.ai-pair/` for active task state, handoffs, blockers, and review results
+- `.ai-pair/plan.md` for the mandatory lightweight-change plan file
 - a local Python MCP server for structured reads, writes, and search
 
 ## What You Get
 
 - A shared-memory directory at `.ai-pair/`
+- A `.ai-pair/plan.md` planning file for lightweight changes
 - A `COLDSTART_HANDOFF_YYYYMMDD.md` file created during bootstrap
 - Cursor project rules in `.cursor/rules/`
 - Cursor MCP config in `.cursor/mcp.json`
@@ -54,11 +56,13 @@ That first request recipient becomes the `primary` assistant; the other assistan
 - Both assistants must treat `AI_CONTEXT.md`, the newest `COLDSTART_HANDOFF_*.md`, and `.ai-pair/` as the source of truth for their respective scopes.
 - Medium/large changes must go through the OpenSpec gate before execution.
 - The primary assistant's plan must be detailed enough that the primary assistant itself could execute the task step by step without filling in missing implementation details.
+- By default, the primary assistant must stop after writing the plan artifact and handing ownership to the secondary assistant.
 
 ## Repository Layout
 
 ```text
 .ai-pair/                  Active shared memory and handoff state
+.ai-pair/plan.md          Required plan artifact for lightweight changes
 .cursor/rules/             Cursor rules for planning, OpenSpec gating, and review
 .cursor/mcp.json           Cursor MCP config for the shared-memory server
 docs/                      Workflow, bootstrap, rules, and architecture docs
@@ -77,6 +81,7 @@ AGENTS.md                  Cross-session project instructions
 - Durable memory follows the local `context-coldstart-pack` dual-file pattern.
 - MCP adds structured access and search, but files remain the truth source.
 - Plans are intentionally detailed and include a self-execution blueprint for the primary assistant.
+- The default execution gate is `plan_then_handoff`, so the primary assistant does not continue into code edits by default.
 - Kimi bootstrap is a one-time setup step, not a per-task requirement.
 - `high` and `critical` review findings always block `done`.
 - Design drift sends the workflow back to `planning` instead of forcing local fixes.

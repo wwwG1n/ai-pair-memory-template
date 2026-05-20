@@ -186,9 +186,51 @@ def ensure_coldstart_handoff(workspace: Path) -> Path:
 def refresh_status(workspace: Path) -> None:
     path = workspace / ".ai-pair" / "status.json"
     payload = json.loads(path.read_text(encoding="utf-8"))
-    payload["summary"] = "Bootstrap complete. Assign the assistant that received the request first as `primary_plan`, then write a detailed plan or trigger the OpenSpec gate."
+    payload["summary"] = "Bootstrap complete. Assign the assistant that received the request first as `primary_plan`, write the plan artifact, then stop and hand execution to `secondary_execute`."
+    payload["execution_gate"] = "plan_then_handoff"
     payload["updated_at"] = utc_now()
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def refresh_plan(workspace: Path) -> None:
+    path = workspace / ".ai-pair" / "plan.md"
+    body = "\n".join(
+        [
+            "# Working Plan",
+            "",
+            "## Execution Gate",
+            "",
+            "- Policy: `plan_then_handoff`",
+            "- Meaning: the primary assistant must stop after writing this plan and handing ownership to `secondary_execute`, unless the human explicitly overrides that rule.",
+            "",
+            "## Scope",
+            "",
+            "- Requested outcome: `TBD`",
+            "- Non-goals: `TBD`",
+            "",
+            "## Planned Files Or Modules",
+            "",
+            "- `TBD`",
+            "",
+            "## Implementation Order",
+            "",
+            "1. `TBD`",
+            "",
+            "## Validation",
+            "",
+            "- `TBD`",
+            "",
+            "## Risks And Approvals",
+            "",
+            "- `TBD`",
+            "",
+            "## If The Primary Assistant Implemented This Itself",
+            "",
+            "- `TBD`",
+            "",
+        ]
+    )
+    path.write_text(body, encoding="utf-8")
 
 
 def refresh_handoff(workspace: Path) -> None:
@@ -204,9 +246,11 @@ def refresh_handoff(workspace: Path) -> None:
             "",
             "## Required Action",
             "",
-            "The assistant that received the request first should inspect the requested change, decide whether the OpenSpec gate applies, and then hand execution to the secondary assistant.",
+            "The assistant that received the request first should inspect the requested change, decide whether the OpenSpec gate applies, write `.ai-pair/plan.md`, and then hand execution to the secondary assistant.",
             "",
             "The plan should be detailed enough that the primary assistant could execute it directly if the strong model kept the implementation role.",
+            "",
+            "Under the default `plan_then_handoff` gate, the primary assistant must stop after writing the plan and switching ownership.",
             "",
             "The secondary assistant should wait until ownership moves to `secondary_execute`.",
             "",
@@ -247,6 +291,7 @@ def bootstrap_workspace(workspace: Path, create_venv: bool, install_dev: bool) -
     refresh_ai_context(workspace)
     ensure_coldstart_handoff(workspace)
     refresh_status(workspace)
+    refresh_plan(workspace)
     refresh_handoff(workspace)
     refresh_cursor_mcp_config(workspace)
 

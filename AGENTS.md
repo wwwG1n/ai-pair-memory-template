@@ -9,8 +9,9 @@ Before doing substantive work:
 1. Read `AI_CONTEXT.md`.
 2. Read the newest `COLDSTART_HANDOFF_*.md` if one exists.
 3. Read `.ai-pair/status.json`.
-4. Read `.ai-pair/current_handoff.md`.
-5. If present, read `.ai-pair/task_board.md`, `.ai-pair/review_findings.md`, and `.ai-pair/blockers.md`.
+4. Read `.ai-pair/plan.md`.
+5. Read `.ai-pair/current_handoff.md`.
+6. If present, read `.ai-pair/task_board.md`, `.ai-pair/review_findings.md`, and `.ai-pair/blockers.md`.
 
 ## Default Workflow Roles
 
@@ -30,6 +31,8 @@ Do not collapse these roles unless the human explicitly asks you to.
 ## Planning Quality Bar
 
 - Planning outputs must be detailed enough that the primary assistant could execute the task itself without inventing missing steps.
+- For lightweight changes, planning must be written into `.ai-pair/plan.md`.
+- For medium and large changes, planning must be written into OpenSpec proposal/tasks files and summarized in `.ai-pair/plan.md`.
 - Every substantial plan should include:
   - the requested outcome and non-goals
   - the files or modules expected to change
@@ -43,9 +46,11 @@ Do not collapse these roles unless the human explicitly asks you to.
 - Treat `AI_CONTEXT.md` as the compact working journal.
 - Treat the newest `COLDSTART_HANDOFF_*.md` as the detailed recovery handoff.
 - Treat `.ai-pair/` as the source of truth for the active change.
+- Treat `.ai-pair/plan.md` as the required plan artifact for lightweight changes.
 - Prefer using the shared-memory MCP server when available.
 - If MCP is unavailable, update the files directly and keep them consistent.
 - Do not invent task completion, review results, blockers, or test outcomes.
+- If `status.json` says `execution_gate` is `plan_then_handoff`, the primary assistant must stop after writing the plan and handing ownership to the secondary assistant.
 
 ## OpenSpec Gate
 
@@ -63,7 +68,8 @@ Before ending a meaningful round:
 1. Refresh `AI_CONTEXT.md`.
 2. Refresh the newest `COLDSTART_HANDOFF_*.md` too unless the exchange was truly trivial.
 3. Refresh `.ai-pair/status.json`.
-4. Update `.ai-pair/current_handoff.md` if ownership or next action changed.
-5. Append a structured event to `.ai-pair/events.jsonl`.
+4. Refresh `.ai-pair/plan.md` when the plan changed.
+5. Update `.ai-pair/current_handoff.md` if ownership or next action changed.
+6. Append a structured event to `.ai-pair/events.jsonl`.
 
 Keep updates concise and operational.

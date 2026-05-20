@@ -5,14 +5,15 @@
 1. The assistant that receives the request first becomes the primary assistant for that change.
 2. The primary assistant reads `AGENTS.md`, `AI_CONTEXT.md`, the newest `COLDSTART_HANDOFF_*.md` when present, and `.ai-pair/current_handoff.md`.
 3. The primary assistant decides whether the OpenSpec gate is required.
-4. The primary assistant writes the plan or OpenSpec proposal.
-5. Ownership moves to `secondary_execute`.
-6. The secondary assistant executes only the approved tasks.
-7. Ownership moves to `primary_review`.
-8. The primary assistant reviews the diff, tests, and security posture.
-9. If findings exist, ownership moves to `secondary_fix`.
-10. The secondary assistant fixes only the recorded findings.
-11. The primary assistant performs the final review and closes the loop.
+4. The primary assistant writes `.ai-pair/plan.md` for lightweight changes, or OpenSpec proposal/tasks files plus a summary in `.ai-pair/plan.md` for medium/large changes.
+5. The primary assistant updates `.ai-pair/status.json` to hand ownership to `secondary_execute`.
+6. The primary assistant stops. It does not continue into implementation in the same turn unless the human explicitly overrides the gate.
+7. The secondary assistant executes only the approved tasks.
+8. Ownership moves to `primary_review`.
+9. The primary assistant reviews the diff, tests, and security posture.
+10. If findings exist, ownership moves to `secondary_fix`.
+11. The secondary assistant fixes only the recorded findings.
+12. The primary assistant performs the final review and closes the loop.
 
 ## OpenSpec Gate
 
@@ -36,6 +37,7 @@ Primary assistant responsibilities:
 - architecture and strategy review using `best-minds` when tradeoffs are non-obvious
 - write a detailed plan that is executable without hidden assumptions
 - update `.ai-pair/status.json`
+- write `.ai-pair/plan.md` for lightweight changes
 - update `.ai-pair/task_board.md`
 - update `.ai-pair/current_handoff.md`
 - refresh durable memory when the round materially changes project understanding
@@ -50,6 +52,7 @@ Every substantial plan must include:
 - a "If the primary assistant implemented this itself" execution blueprint
 
 The primary assistant must not do the main implementation during this phase unless the human explicitly reassigns execution.
+Under the default `plan_then_handoff` gate, the primary assistant must stop immediately after saving the plan and handing ownership to the secondary assistant.
 
 ## Execution Phase
 

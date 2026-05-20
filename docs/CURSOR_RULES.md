@@ -11,6 +11,7 @@ Purpose:
 - load `AGENTS.md`
 - load `AI_CONTEXT.md`
 - load the newest `COLDSTART_HANDOFF_*.md` when present
+- load `.ai-pair/plan.md`
 - load active shared-memory files
 - enforce `using-superpowers` startup discipline
 
@@ -24,6 +25,7 @@ Purpose:
 - call `best-minds` for non-obvious architecture and safety tradeoffs
 - update handoff and task state
 - force detailed planning with a self-execution blueprint
+- stop after planning when `execution_gate` is `plan_then_handoff`
 
 ### `20-openspec-gate.mdc`
 

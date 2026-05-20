@@ -14,6 +14,7 @@ class SharedMemoryStore:
         self.ai_context_path = self.root / "AI_CONTEXT.md"
         self.status_path = self.ai_pair_dir / "status.json"
         self.events_path = self.ai_pair_dir / "events.jsonl"
+        self.plan_path = self.ai_pair_dir / "plan.md"
         self.task_board_path = self.ai_pair_dir / "task_board.md"
         self.current_handoff_path = self.ai_pair_dir / "current_handoff.md"
         self.review_findings_path = self.ai_pair_dir / "review_findings.md"
@@ -24,6 +25,7 @@ class SharedMemoryStore:
         self.ai_pair_dir.mkdir(parents=True, exist_ok=True)
         defaults: dict[Path, str] = {
             self.ai_context_path: "# AI Context Journal\n",
+            self.plan_path: "# Working Plan\n",
             self.task_board_path: "# Task Board\n",
             self.current_handoff_path: "# Current Handoff\n",
             self.review_findings_path: "# Review Findings\n",
@@ -75,6 +77,12 @@ class SharedMemoryStore:
 
     def read_task_board(self) -> str:
         return self._read_text(self.task_board_path)
+
+    def read_plan(self) -> str:
+        return self._read_text(self.plan_path)
+
+    def write_plan(self, content: str) -> None:
+        self._write_text(self.plan_path, content)
 
     def read_current_handoff(self) -> str:
         return self._read_text(self.current_handoff_path)

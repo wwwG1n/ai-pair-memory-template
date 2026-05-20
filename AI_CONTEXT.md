@@ -3,7 +3,7 @@
 ## Context Metadata
 
 - Context created: 2026-05-17 00:00:00 +00:00
-- Last updated: 2026-05-20 00:08:00 +08:00
+- Last updated: 2026-05-20 20:24:00 +08:00
 - Timezone: UTC
 - Workspace root: `REPLACE_WITH_PROJECT_ROOT`
 
@@ -48,7 +48,7 @@
 - Current objective: initialize the template for a real project
 - Current status: Bootstrap only
 - Latest blockers: None recorded
-- Next recommended step: Run the bootstrap script, connect both assistants to the MCP server, assign the first request recipient as the primary assistant, and start the first role-driven change with a detailed execution-ready plan
+- Next recommended step: Run the bootstrap script, connect both assistants to the MCP server, assign the first request recipient as the primary assistant, and verify that the primary assistant stops after writing `.ai-pair/plan.md` and handing ownership to `secondary_execute`
 
 ## Experiments Snapshot
 
@@ -100,4 +100,12 @@
 - New decisions or changes: Refactored the workflow from model-bound ownership to role-bound ownership. Shared-memory owners now use `primary_plan`, `primary_review`, `secondary_execute`, and `secondary_fix`. The primary assistant is defined as whichever assistant first receives the request and handles planning/review for that change; the paired assistant becomes the secondary lane for execution/fix
 - Files touched: `AGENTS.md`, `README.md`, `.ai-pair/*`, `.cursor/rules/*.mdc`, `docs/WORKFLOW.md`, `docs/ARCHITECTURE.md`, `docs/CURSOR_RULES.md`, `docs/KIMI_BOOTSTRAP.md`, `scripts/bootstrap_project.py`, `tools/shared_memory_mcp/shared_memory_mcp/service.py`, `spec/specs/shared-memory-workflow/spec.md`, and `tests/*`
 - Experiment or result updates: `python -m pytest` passed after the role-driven owner refactor
+- New blockers or open questions: None recorded
+
+### 2026-05-20 20:24:00 +08:00
+
+- User request: Reported that the workflow still allowed the primary assistant to continue editing code after generating a plan, and asked for the plan stage to stop as intended
+- New decisions or changes: Added a harder execution gate. The template now introduces `.ai-pair/plan.md` as a required plan artifact for lightweight changes, stores `execution_gate: plan_then_handoff` in `.ai-pair/status.json`, updates bootstrap defaults accordingly, and strengthens AGENTS/rules/docs so the primary assistant must stop after writing the plan and handing ownership to `secondary_execute` unless the human explicitly overrides the gate
+- Files touched: `AGENTS.md`, `README.md`, `.ai-pair/plan.md`, `.ai-pair/status.json`, `.ai-pair/current_handoff.md`, `.ai-pair/task_board.md`, `.cursor/rules/10-planning.mdc`, `docs/WORKFLOW.md`, `docs/ARCHITECTURE.md`, `docs/CURSOR_RULES.md`, `scripts/bootstrap_project.py`, `tools/shared_memory_mcp/shared_memory_mcp/models.py`, `tools/shared_memory_mcp/shared_memory_mcp/store.py`, `tests/test_bootstrap_project.py`, and `tests/test_shared_memory_service.py`
+- Experiment or result updates: `python -m pytest` passed after the hard-stop execution-gate update
 - New blockers or open questions: None recorded

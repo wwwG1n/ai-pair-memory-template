@@ -21,6 +21,7 @@ That state is split into three layers:
 The following files are the canonical state:
 
 - `COLDSTART_HANDOFF_*.md`
+- `.ai-pair/plan.md`
 - `.ai-pair/status.json`
 - `.ai-pair/events.jsonl`
 - `.ai-pair/task_board.md`
@@ -30,6 +31,7 @@ The following files are the canonical state:
 - `AI_CONTEXT.md`
 
 Both assistants must treat these files as authoritative, with `AI_CONTEXT.md` and the newest handoff carrying durable project memory and `.ai-pair/` carrying active change state.
+The plan file plus `status.json.execution_gate` together define whether the primary assistant must stop after planning.
 
 ### 2. MCP Access Layer
 
